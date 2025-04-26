@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
+<%- include('./layouts/header.ejs', {title: 'Dashboard' }) -%>
+
+<body>
+  <div class="preloader">
+    <div class="lds-ripple">
+      <div class="lds-pos"></div>
+      <div class="lds-pos"></div>
+    </div>
+  </div>
+  <div id="main-wrapper">
+    <%- include('./layouts/topbar.ejs') -%>
+    <%- include('./layouts/sidebar.ejs') -%>
+    <div class="page-wrapper">
+      <div class="page-breadcrumb">
+        <div class="row">
+          <div class="col-5 align-self-center">
+            <h4 class="page-title">Dashboard</h4>
+          </div>
+          <div class="col-7 align-self-center">
+            <div class="d-flex align-items-center justify-content-end">
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                    <a href="#">Home</a>
+                  </li>
+                  <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                </ol>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container-fluid">
+        <center><img id="loading-image" src="https://78.media.tumblr.com/tumblr_mdkoyttBGV1rgpyeqo1_500.gif" style="display:none;" /></center>
+        <div class="row el-element-overlay" id="image_body">
+
+        </div>
+      </div>
+      <footer class="footer text-center">
+        All Rights Reserved by Natic. Developed by
+        <a href="#">Natic</a>.
+      </footer>
+    </div>
+  </div>
+  <div class="chat-windows"></div>
+  <%- include('./layouts/footer.ejs') -%>
+  <script>
+    function loadPlan() {
+      $("#loading-image").show();
+      $.ajax({
+        type: "POST",
+        url: "api/get_file_lists",
+        data: {},
+        success: function(res) {
+          $("#loading-image").hide();
+          if (res.data.length === 0) {
+            $("#image_body").html('<div class="col-12 text-center"><div class="card"><div class="card-body">Data Not Found</div></div></div>');
+          } else {
+            for (let i = 0; i < res.data.length; i++) {
+              let id = res.data[i].id;
+              let name = res.data[i].name;
+              let url = res.data[i].url;
+              let path = res.data[i].path;
+              let size = cSz(res.data[i].size);
+              let type = res.data[i].type;
+              let ip = res.data[i].ip;
+              let created_at = res.data[i].created_at;
+              $("#image_body").append(
+                `<div class="col-lg-3 col-md-5">
+                <div class="card">
+                  <div class="el-card-item">
+                    <div class="el-card-avatar el-overlay-1 m-b-20"> <img src="${path}" alt="user" class="img-fluid rounded"/>
+                      <div class="el-overlay">
+                        <ul class="list-style-none el-info">
+                          <li class="el-item"><a class="btn default btn-outline image-popup-vertical-fit el-link" href="${url}"><i class="icon-magnifier"></i></a></li>
+                          <li class="el-item"><a class="btn default btn-outline el-link" href="${url}"><i class="icon-link"></i></a></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="d-flex no-block align-items-center">
+                      <div class="m-l-15">
+                        <span class="text-muted text-sm">Type : ${type}</span><br>
+                        <span class="text-muted text-sm">Size : ${size}</span><br>
+                        <span class="text-muted text-sm">IP : <a href="https://whatismyipaddress.com/ip/${ip}" target="_blank" class="btn btn-xs btn-info btn-rounded">Details</a></span><br>
+                        <span class="text-muted text-sm">Created At : ${convertDate(created_at)}</span>
+                      </div>
+                      <div class="ml-auto m-r-15">
+                        <a href="javscript:;" onclick="removeImg('${id}')" class="btn btn-danger btn-sm text-white btn-circle text-inverse" title="Delete" data-toggle="tooltip"><i class="ti-trash"></i></a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>`
+              );
+            }
+          }
+        },
+        error: function() {
+          $("#image_body").html('<div class="col-12 text-center"><div class="card"><div class="card-body">Data Not Found</div></div></div>');
+        },
+      });
+    }
+
+    function removeImg(id) {
+      if (confirm('Are you sure you want to delete this item?')) {
+        $("#loading-image").show();
+        $("#image_body").hide();
+        $.ajax({
+          type: "POST",
+          url: "api/delete_file_lists/" + id,
+          data: {},
+          success: function(res) {
+            if (res.s === 's') {
+              toastMessage('Success', res.m, '#ff6849', 'success');
+            } else {
+              toastMessage('Invalid', res.m, '#ff6849', 'warning');
+            }
+            setInterval(() => {
+              location.reload();
+            }, 2000);
+          },
+          error: function() {
+            toastMessage('Invalid', 'Internal Server Error', '#ff6849', 'error');
+          },
+        });
+      } else {
+
+      }
+    }
+
+    function cSz(sizeInBytes) {
+      if (sizeInBytes < 1024 * 1024) {
+        const sizeInKB = (sizeInBytes / 1024).toFixed(2);
+        return sizeInKB + ' KB';
+      } else {
+        const sizeInMB = (sizeInBytes / (1024 * 1024)).toFixed(2);
+        return sizeInMB + ' MB';
+      }
+    }
+
+    function convertDate(date) {
+      if (date == null || date == undefined || date == "") {
+        return "";
+      } else {
+        return moment(date).format("DD MMM YYYY HH:mm:ss");
+      }
+    }
+
+    $(document).ready(function() {
+      loadPlan();
+    })
+
+    toastMessage = (title, text, color, icon) => {
+      $.toast({
+        heading: title,
+        text: text,
+        position: 'top-center',
+        loaderBg: color,
+        icon: icon,
+        hideAfter: 3500,
+        stack: 6
+      });
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
+<%- include('./layouts/header.ejs', {title: 'Dashboard' }) -%>
+
+<body>
+  <div class="preloader">
+    <div class="lds-ripple">
+      <div class="lds-pos"></div>
+      <div class="lds-pos"></div>
+    </div>
+  </div>
+  <div id="main-wrapper">
+    <%- include('./layouts/topbar.ejs') -%>
+    <%- include('./layouts/sidebar.ejs') -%>
+    <div class="page-wrapper">
+      <div class="page-breadcrumb">
+        <div class="row">
+          <div class="col-5 align-self-center">
+            <h4 class="page-title">Dashboard</h4>
+          </div>
+          <div class="col-7 align-self-center">
+            <div class="d-flex align-items-center justify-content-end">
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                    <a href="#">Home</a>
+                  </li>
+                  <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                </ol>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container-fluid">
+        <div class="row">
+          <!-- Column -->
+          <div class="col-lg-12">
+            <div class="card shadow">
+              <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-12 align-self-center d-flex align-items-center justify-content-end">
+                      <button id="addRow" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Upload File
+                      </button>
+                    </div>
+                  </div>
+                <div class="table-responsive">
+                  <table class="table table-bordered table-hover table-sm" id="zero_config">
+                    <thead>
+                      <tr class="text-center">
+                        <th>Customer</th>
+                        <th>Order ID</th>
+                        <th>Photo</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="text-center">
+                        <td>Steave Jobs</td>
+                        <td>#85457898</td>
+                        <td> <img src="/assets/images/gallery/chair.jpg" alt="iMac" width="80"> </td>
+                        <td>Rounded Chair</td>
+                        <td>20</td>
+                        <td>10-7-2017</td>
+                        <td> <span class="label label-success font-weight-100">Paid</span>
+                        </td>
+                        <td><a href="javascript:void(0)" class="text-inverse p-r-10" data-toggle="tooltip" title="Edit"><i class="ti-marker-alt"></i></a> <a href="javascript:void(0)" class="text-inverse" title="Delete" data-toggle="tooltip"><i class="ti-trash"></i></a></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Column -->
+        </div>
+      </div>
+      <footer class="footer text-center">
+        All Rights Reserved by Natic. Developed by
+        <a href="#">Natic</a>.
+      </footer>
+    </div>
+  </div>
+  <div class="chat-windows"></div>
+  <%- include('./layouts/footer.ejs') -%>
+</body>
+
+</html>
